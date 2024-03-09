@@ -2,7 +2,7 @@
 name = "math"
 version = "1.0.0"
 description = "Motoko linear algebra and mathematical calculus module"
-repository = "https://github.com/ArielRobotti/math.git"
+repository = "https://github.com/ArielRobotti/math"
 keywords = [
   "Motoko",
   "Math",

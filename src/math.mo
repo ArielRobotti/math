@@ -118,22 +118,24 @@ module {
                 var determ = 0 : Int;
                 return switch (selecRowOrCol()) {
                     case (null, ?col) {
-                        for (i in Iter.range(0, order - 1)) {
-                            let subM = removeCol(removeRow(m, i), col);
-                            determ += ((-1) ** (i + col)) * m[i][col] * det(subM);
+                        for (i in Iter.range(0, order - 1)) {      
+                            if (m[i][col] != 0){
+                                let subM = removeCol(removeRow(m, i), col);
+                                determ += ((-1) ** (i + col)) * m[i][col] * det(subM); 
+                            };
                         };
                         determ;
                     };
                     case (?row, null) {
                         for (i in Iter.range(0, order - 1)) {
-                            let subM = removeCol(removeRow(m, row), i);
                             if (m[row][i] != 0){
+                               let subM = removeCol(removeRow(m, row), i); 
                                determ +=  ((-1) ** (i + row)) * m[row][i] * det(subM); 
                             };
                         };
                         determ;
                     };
-                    case _ { Prim.trap("Unspected error") };
+                    case _ { Prim.trap("Unexpected error") };
 
                 };
             };
