@@ -35,4 +35,16 @@ actor {
         linealAlg.det(m);
     };
 
+    public query func identity(o: Nat): async [[Int]]{
+        linealAlg.identity(o);
+    };
+
+    public query func adjunt(m: [[Int]]): async [[Int]]{
+        linealAlg.mAdj(m);
+    };
+
+    public query func mInv(m: [[Int]]): async [[Float]] {
+        linealAlg.mInv(m);
+    }
+
 };

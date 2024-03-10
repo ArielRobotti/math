@@ -1,11 +1,15 @@
 import Prim "mo:⛔";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
+import { Rand } "mo:random-class/Rand";
+
 module {
 
     public module linealAlg {
 
-        public func shape<T>(m : [[Int]]) : (Nat, Nat) { (rows<T>(m), cols<T>(m))};
+        public func shape<T>(m : [[Int]]) : (Nat, Nat) {
+            (rows<T>(m), cols<T>(m));
+        };
 
         func rows<T>(m : [[Int]]) : Nat { return m.size() };
 
@@ -31,6 +35,10 @@ module {
                 };
             };
             result;
+        };
+
+        public func identity(order : Nat) : [[Int]] {
+            tabulate<[Int]>(order, func r = tabulate<Int>(order, func c = if (r == c) { 1 } else { 0 }));
         };
 
         public func fillWith(m : [[Int]], val : Int) : [[Int]] {
@@ -69,15 +77,20 @@ module {
             tabulate<[Int]>(rows, func r = tabulate<Int>(cols - 1, func c = if (c < _c) { m[r][c] } else { m[r][c +1] }));
         };
 
-        
         public func det(m : [[Int]]) : Int {
-            //Recursive calculation of the determinant of nxn matrices by the method of cofactors, 
+            //Recursive calculation of the determinant of nxn matrices by the method of cofactors,
             //and by the Sarrus method in the base case of the recursion
             let shapeM = shape(m);
             let order = shapeM.0;
             if (shapeM.0 != shapeM.1) {
                 Prim.trap("The matrix entered must be square");
             };
+            if (shape(m)== (1,1)){
+                return m[0][0];
+            } else
+            if (shape(m) == (2,2)){
+                return (m[0][0]*m[1][1] - m[1][0]*m[0][1])
+            } else
             if (shape(m) == (3, 3)) {
                 // Case base: Sarrus rule
                 return (m[0][0] * m[1][1] * m[2][2]) +
@@ -88,7 +101,6 @@ module {
                 (m[2][2] * m[0][1] * m[1][0]);
             } else {
                 func selecRowOrCol() : (?Nat, ?Nat) {
-
                     let rows = Prim.Array_init<Nat>(order, 0);
                     let cols = Prim.Array_init<Nat>(order, 0);
                     var max = 0;
@@ -118,19 +130,19 @@ module {
                 var determ = 0 : Int;
                 return switch (selecRowOrCol()) {
                     case (null, ?col) {
-                        for (i in Iter.range(0, order - 1)) {      
-                            if (m[i][col] != 0){
+                        for (i in Iter.range(0, order - 1)) {
+                            if (m[i][col] != 0) {
                                 let subM = removeCol(removeRow(m, i), col);
-                                determ += ((-1) ** (i + col)) * m[i][col] * det(subM); 
+                                determ += ((-1) ** (i + col)) * m[i][col] * det(subM);
                             };
                         };
                         determ;
                     };
                     case (?row, null) {
                         for (i in Iter.range(0, order - 1)) {
-                            if (m[row][i] != 0){
-                               let subM = removeCol(removeRow(m, row), i); 
-                               determ +=  ((-1) ** (i + row)) * m[row][i] * det(subM); 
+                            if (m[row][i] != 0) {
+                                let subM = removeCol(removeRow(m, row), i);
+                                determ += ((-1) ** (i + row)) * m[row][i] * det(subM);
                             };
                         };
                         determ;
@@ -139,6 +151,25 @@ module {
 
                 };
             };
+        };
+
+        public func mAdj(m : [[Int]]) : [[Int]] {
+            let order = m.size();
+            if (order != m[0].size()) {
+                Prim.trap("The matrix entered must be square");
+            };
+            func adjElem(r : Nat, c : Nat) : Int {
+                det(removeCol(removeRow(m, r), c));
+            };
+            tabulate<[Int]>(order, func r = tabulate<Int>(order, func c = (-1) ** (r +c) * adjElem(r, c)));
+        };
+
+        public func mInv(m: [[Int]]) : [[Float]]{
+            let order = m.size();
+            if (m[0].size() != order) {Prim.trap("The matrix entered must be square")};
+            let mAdjTrans = transpose(mAdj(m));
+            let determ = Prim.intToFloat(det(m));
+            tabulate<[Float]>(order, func r = tabulate<Float>(order, func c = Prim.intToFloat(mAdjTrans[r][c])/determ));
         };
     };
 
