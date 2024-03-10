@@ -45,6 +45,10 @@ actor {
 
     public query func mInv(m: [[Int]]): async [[Float]] {
         linealAlg.mInv(m);
-    }
+    };
+
+    public query func mul(m1: [[Int]], m2: [[Int]]):async  [[Int]]{
+        linealAlg.mul(m1, m2);
+    };
 
 };

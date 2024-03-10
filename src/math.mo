@@ -152,6 +152,20 @@ module {
             };
         };
 
+        public func mul(m1: [[Int]], m2: [[Int]]): [[Int]]{
+            let shapeM1 = shape(m1);
+            let shapeM2 = shape(m2);
+            if (shapeM1.1 != shapeM2.0){ Prim.trap("Matrices cannot be multiplied together")};
+            func _mul(r: Nat, c: Nat): Int{
+                var result: Int = 0;
+                for (i in Iter.range(0, shapeM1.1 - 1)){
+                    result += m1[r][i] * m2[i][c];
+                };
+                result;
+            };
+            tabulate<[Int]>(shapeM1.0, func r = tabulate<Int>(shapeM2.1, func c = _mul(r, c)) );
+        };
+
         public func mAdj(m : [[Int]]) : [[Int]] {
             let order = m.size();
             if (order != m[0].size()) {
