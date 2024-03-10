@@ -1,7 +1,6 @@
 import Prim "mo:⛔";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
-import { Rand } "mo:random-class/Rand";
 
 module {
 

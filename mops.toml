@@ -1,6 +1,6 @@
 [package]
 name = "math"
-version = "1.0.0"
+version = "1.0.1"
 description = "Motoko linear algebra and mathematical calculus module"
 repository = "https://github.com/ArielRobotti/math"
 keywords = [
